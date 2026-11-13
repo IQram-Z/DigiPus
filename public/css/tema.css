@@ -1,0 +1,26 @@
+/* =====================================================================
+   TEMA DIGIPUS - file ini bebas kamu ubah, TIDAK perlu npm / build.
+   Simpan lalu tekan Ctrl+F5 di browser.
+   ===================================================================== */
+
+/* ---- Warna utama (berlaku di seluruh aplikasi) ---- */
+:root {
+  --color-royal: #32269e;  /* biru utama: header dashboard, panel kiri login */
+  --color-ink:   #191163;  /* navy gelap: lingkaran, judul, panel kanan atas */
+  --color-amber: #ef7d00;  /* oranye: tombol, menu aktif */
+  --color-plate: #9690b8;  /* alas lavender di bawah sampul kategori */
+  --color-chip:  #4b3fb0;  /* label (tags) di pop-up detail buku */
+}
+
+/* ---- Hover buku di "Book Category" ---- */
+/* kotak di belakang sampul (yang miring berlawanan) */
+.tile-cat .tile-back          { background: #6f64c9; }      /* <- warna kotak belakang */
+.tile-cat:hover .tile-back,
+.tile-cat:focus-visible .tile-back { opacity: .55; }        /* <- 0 (hilang) sampai 1 (pekat) */
+
+/* alas lavender saat di-hover dan saat kategori dipilih */
+.tile-cat:hover .plate        { background-color: #867fae; }
+.tile-cat.on .plate           { background-color: #32269e; }
+
+/* kemiringan hover: 0deg = lurus */
+.tile-cat { --tilt: 4deg; --back: 8deg; }

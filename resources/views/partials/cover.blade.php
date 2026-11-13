@@ -1,0 +1,1 @@
+<span class="cv {{ ($cvnat ?? false) ? 'cv-nat' : '' }}" style="--w:{{ $cvw ?? '100%' }};--sd:{{ $cvsd ?? '.75rem' }}"><img src="{{ $cvsrc }}" alt="{{ $cvalt ?? '' }}" decoding="async" @if($cvlazy ?? false) loading="lazy" @endif></span>

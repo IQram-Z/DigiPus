@@ -1,0 +1,128 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import 'tailwindcss';
+@source '../views';
+
+html { font-size: 16px; }
+@media (min-width: 1024px) { html { font-size: clamp(12.5px, 1.111vw, 21px); } }
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-pop: 'Poppins', 'Inter', ui-sans-serif, sans-serif;
+  --color-ink: #191163;
+  --color-royal: #32269e;
+  --color-amber: #ef7d00;
+  --color-plate: #9690b8;
+  --color-chip: #4b3fb0;
+}
+
+/* ===== Form (login/register) ===== */
+.inp { @apply h-[3.25rem] w-full rounded-[1.125rem] bg-[#eeeeee] px-5 font-pop text-[0.875rem] text-black outline-none transition placeholder:text-neutral-500 focus:bg-white focus:ring-4 focus:ring-royal/20; }
+.inp.err { @apply bg-rose-50 ring-2 ring-rose-400; }
+.btn-o { @apply inline-flex h-[3.25rem] w-full items-center justify-center rounded-[1.125rem] bg-amber font-pop text-[1.0625rem] font-semibold text-white transition hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg hover:shadow-amber/30 active:translate-y-0 active:scale-[.98]; }
+.btn-line { @apply inline-flex h-[3.25rem] w-full items-center justify-center gap-2 rounded-[1.125rem] border border-ink bg-white font-pop text-[0.9375rem] text-black transition hover:-translate-y-0.5 hover:bg-ink/5 active:translate-y-0 active:scale-[.98]; }
+.auth-card { box-shadow: 1.125rem 1.125rem 0 #e8e8e8; }
+.lbl { @apply mb-1.5 mt-4 block pl-1 font-pop text-[0.75rem] text-neutral-500; }
+
+/* ===== Sidebar ===== */
+.nav-i { @apply flex items-center gap-[0.7rem] text-[0.875rem] font-semibold text-[#a3a3a3] transition-colors; }
+.nav-i .tile { @apply grid size-[2.1rem] place-items-center rounded-[0.55rem] bg-[#e3dcdc] text-[#9b9b9b] transition duration-300; }
+.nav-i:hover { @apply text-neutral-700; }
+.nav-i:hover .tile { @apply -translate-y-0.5 bg-amber/25 text-amber; }
+.nav-i.on { @apply text-black; }
+.nav-i.on .tile { @apply bg-amber text-white; }
+
+/* ===== Buku: semua sampul rasio 2:3 (seragam), bayangan statis agar ringan ===== */
+.cv { position: relative; display: block; aspect-ratio: 2 / 3; width: var(--w, 100%); }
+.cv::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .2); transform: translate(var(--sd, 0.75rem), var(--sd, 0.75rem)); transition: transform .4s cubic-bezier(.2, .9, .25, 1.3); }
+.cv img { position: relative; display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+.lift .cv { transition: transform .4s cubic-bezier(.2, .9, .25, 1.3); will-change: transform; }
+.lift:hover .cv { transform: translate(-5px, -9px); }
+.lift:hover .cv::before { transform: translate(calc(var(--sd, 0.75rem) + 0.3125rem), calc(var(--sd, 0.75rem) + 0.5625rem)); }
+.hard { box-shadow: 0.75rem 0.75rem 0 rgba(0, 0, 0, .2); }
+.tile-cat { --tilt: 4deg; --back: 8deg; } /* ubah ke 0deg untuk hover lurus tanpa miring */
+.tile-lift { transform-origin: 50% 100%; transition: transform .55s cubic-bezier(.2, .9, .25, 1.3); }
+.tile-back { transform-origin: 50% 100%; background: var(--back-color, #6f64c9); opacity: 0; transition: transform .55s cubic-bezier(.2, .9, .25, 1.3), opacity .3s; }
+.tile-cat:hover .tile-lift, .tile-cat:focus-visible .tile-lift { transform: translateY(-.8rem) rotate(calc(var(--tilt) * -1)); }
+.tile-cat:hover .tile-back, .tile-cat:focus-visible .tile-back { opacity: var(--back-opacity, .55); transform: translateY(-.35rem) rotate(var(--back)); }
+.tile-cat .plate { transition: transform .5s cubic-bezier(.2, .9, .25, 1.4), background-color .3s; }
+.tile-cat:hover .plate { transform: scaleY(1.12); background-color: #867fae; }
+.tile-cat.on .plate { background-color: #32269e; }
+
+.no-sb { scrollbar-width: none; -ms-overflow-style: none; }
+.no-sb::-webkit-scrollbar { display: none; }
+.rail { cursor: grab; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+.rail { gap: 1rem; }
+.rail-item { flex: 0 0 calc((100% - 1rem) / 2); }
+@media (min-width: 640px) { .rail-item { flex-basis: calc((100% - 2rem) / 3); } }
+/* desktop: persis 4 sampul seragam memenuhi lebar baris, jarak kecil sama rata (3 jarak x 4,3% + 4 x 21,775% = 100%) */
+@media (min-width: 1024px) { .rail { gap: 4.3%; } .rail-item { flex-basis: 21.775%; } }
+.rail.dragging { cursor: grabbing; scroll-snap-type: none; }
+
+.book-card.hide { display: none; }
+.book-card.pop { animation: pop .5s cubic-bezier(.2, .9, .25, 1.2) both; }
+
+/* ===== Animasi ===== */
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(var(--r)); } 50% { transform: translateY(-14px) rotate(var(--r)); } }
+.float { animation: float 6s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes rise { from { opacity: 0; transform: translateY(2.125rem); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .8s cubic-bezier(.2, .9, .25, 1) both; animation-delay: calc(var(--i, 0) * 80ms); }
+@keyframes shelf { from { opacity: 0; transform: translateY(4.375rem) rotate(-4deg); } to { opacity: 1; transform: none; } }
+.shelf-in { animation: shelf .9s cubic-bezier(.2, .9, .25, 1.1) both; animation-delay: calc(min(var(--i, 0), 5) * 90ms + .15s); }
+@keyframes pop { from { opacity: 0; transform: scale(.8) translateY(1.0rem); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.nav-i .tile svg { width: 1.05rem; height: 1.05rem; }
+
+/* kotak sinopsis di pop-up: scroll tipis & jelas, tinggi tetap agar layout tidak melompat */
+.syn { scrollbar-width: thin; scrollbar-color: #9690b8 transparent; overscroll-behavior: contain; }
+.syn::-webkit-scrollbar { width: .4rem; }
+.syn::-webkit-scrollbar-thumb { background: #9690b8; border-radius: 1rem; }
+.syn::-webkit-scrollbar-track { background: transparent; margin: .5rem 0; }
+
+/* ===== View all (rekomendasi jadi grid) ===== */
+.rail.grid-mode { flex-wrap: wrap; overflow: visible; scroll-snap-type: none; row-gap: 2.75rem; cursor: default; padding-bottom: 1rem; }
+
+/* ===== Scroll halus ke Book Collection ===== */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ===== QR Scan ===== */
+@keyframes sweep { from { transform: translateY(0); } to { transform: translateY(100%); } }
+.scan-sweep { animation: sweep 2.2s ease-in-out infinite alternate; }
+@media print { .no-print { display: none !important; } body { padding: 0; } }
+
+/* ===== UI kit panel petugas & admin ===== */
+.card { @apply rounded-2xl bg-white p-5 ring-1 ring-neutral-200/70 shadow-[0.4rem_0.4rem_0_rgba(25,17,99,0.06)]; }
+.kpi { @apply relative overflow-hidden rounded-2xl bg-white p-4 ring-1 ring-neutral-200/70 shadow-[0.5rem_0.5rem_0_rgba(25,17,99,0.07)]; }
+.tbl { @apply w-full text-left text-sm; }
+.tbl th { @apply whitespace-nowrap px-3 py-2.5 text-[0.7rem] font-semibold uppercase tracking-wider text-neutral-500; }
+.tbl td { @apply border-t border-neutral-100 px-3 py-3 align-middle; }
+.tbl tbody tr:hover { @apply bg-royal/[0.03]; }
+.badge { @apply inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-[0.7rem] font-semibold; }
+.b-green { @apply bg-emerald-100 text-emerald-800; }
+.b-amber { @apply bg-amber/15 text-amber-800; }
+.b-red { @apply bg-rose-100 text-rose-700; }
+.b-blue { @apply bg-chip/10 text-chip; }
+.b-gray { @apply bg-neutral-100 text-neutral-600; }
+.fld { @apply w-full rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-sm outline-none transition placeholder:text-neutral-400 focus:border-royal focus:ring-4 focus:ring-royal/15; }
+.fl { @apply mb-1 block text-xs font-semibold text-neutral-600; }
+.btn-s { @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-amber px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 active:scale-95 disabled:opacity-50; }
+.btn-r { @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-royal px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:scale-95 disabled:opacity-50; }
+.btn-l { @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 transition hover:bg-neutral-50 active:scale-95; }
+.btn-x { @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110 active:scale-95; }
+.btn-s.sm, .btn-r.sm, .btn-l.sm, .btn-x.sm { padding: .35rem .75rem; font-size: .75rem; border-radius: .6rem; }
+.side-i { @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/10 hover:text-white; }
+.side-i.on { @apply bg-white/15 text-white; }
+.side-i svg { width: 1.1rem; height: 1.1rem; flex: none; }
+.pill-i { @apply inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white; }
+.pill-i.on { @apply bg-white text-royal; }
+.pill-i svg { width: 1rem; height: 1rem; }
+.tab-i { @apply inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100; }
+.tab-i.on { @apply bg-ink text-white; }
+.ttl { @apply text-lg font-bold text-ink; }
